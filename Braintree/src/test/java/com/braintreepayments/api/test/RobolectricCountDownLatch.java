@@ -19,6 +19,10 @@ public class RobolectricCountDownLatch {
         }
     }
 
+    public int getCount() {
+        return (int) mCountDownLatch.getCount();
+    }
+
     public void countDown() {
         mCountDownLatch.countDown();
     }

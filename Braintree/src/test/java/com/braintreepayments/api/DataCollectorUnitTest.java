@@ -90,6 +90,13 @@ public class DataCollectorUnitTest {
 
                 latch.countDown();
             }
+
+            @Override
+            protected void finalize() throws Throwable {
+                if (latch.getCount() != 0) {
+                    throw new RuntimeException("BraintreeResponseListener was finalized");
+                }
+            }
         };
 
         DataCollector.collectDeviceData(fragment, sListener);
@@ -121,6 +128,13 @@ public class DataCollectorUnitTest {
                 }
 
                 latch.countDown();
+            }
+
+            @Override
+            protected void finalize() throws Throwable {
+                if (latch.getCount() != 0) {
+                    throw new RuntimeException("BraintreeResponseListener was finalized");
+                }
             }
         };
 
