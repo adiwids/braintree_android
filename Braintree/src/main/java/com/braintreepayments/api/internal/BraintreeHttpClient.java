@@ -5,6 +5,7 @@ import android.net.Uri;
 import com.braintreepayments.api.core.BuildConfig;
 import com.braintreepayments.api.exceptions.AuthorizationException;
 import com.braintreepayments.api.exceptions.ErrorWithResponse;
+import com.braintreepayments.api.exceptions.UnexpectedException;
 import com.braintreepayments.api.exceptions.UnprocessableEntityException;
 import com.braintreepayments.api.interfaces.HttpResponseCallback;
 import com.braintreepayments.api.models.Authorization;
@@ -46,6 +47,11 @@ public class BraintreeHttpClient extends HttpClient {
      * @return User Agent {@link String} for the current SDK version.
      */
     public static String getUserAgent() {
+        /**
+         * Suspected invalid User-Agent string
+         * For debugging switch this with HttpClient.mUserAgent default value.
+         * "braintree/core/" + BuildConfig.VERSION_NAME
+         */
         return "braintree/android/" + BuildConfig.VERSION_NAME;
     }
 
@@ -76,6 +82,9 @@ public class BraintreeHttpClient extends HttpClient {
                             ((ClientToken) mAuthorization).getAuthorizationFingerprint())
                     .build();
         }
+
+        System.out.println("#debug current user agent " + getUserAgent());
+        System.out.println("#debug BraintreeHttpClient#get URI " + uri.toString());
 
         super.get(uri.toString(), callback);
     }

@@ -38,6 +38,7 @@ import static java.net.HttpURLConnection.HTTP_ACCEPTED;
 import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_FORBIDDEN;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
@@ -145,6 +146,21 @@ public class HttpClient<T extends HttpClient> {
             url = mBaseUrl + path;
         }
 
+        System.out.println("#debug submit request WITHOUT executor service");
+        HttpURLConnection connection = null;
+        try {
+            connection = init(url);
+            connection.setRequestMethod(METHOD_GET);
+            postCallbackOnMainThread(callback, parseResponse(connection));
+        } catch (Exception e) {
+            System.out.println("#debug exception catched " + e.getMessage());
+            postCallbackOnMainThread(callback, e);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        /** Disable submit request via thread to get swallowed exception
         mThreadPool.submit(new Runnable() {
             @Override
             public void run() {
@@ -154,6 +170,7 @@ public class HttpClient<T extends HttpClient> {
                     connection.setRequestMethod(METHOD_GET);
                     postCallbackOnMainThread(callback, parseResponse(connection));
                 } catch (Exception e) {
+                    System.out.println("#debug exception catched " + e.getMessage());
                     postCallbackOnMainThread(callback, e);
                 } finally {
                     if (connection != null) {
@@ -162,6 +179,7 @@ public class HttpClient<T extends HttpClient> {
                 }
             }
         });
+         */
     }
 
     /**
@@ -271,6 +289,7 @@ public class HttpClient<T extends HttpClient> {
             case HTTP_UNAVAILABLE:
                 throw new DownForMaintenanceException(readStream(connection.getErrorStream(), gzip));
             default:
+                System.out.println("#debug response code " + responseCode);
                 throw new UnexpectedException(readStream(connection.getErrorStream(), gzip));
         }
     }

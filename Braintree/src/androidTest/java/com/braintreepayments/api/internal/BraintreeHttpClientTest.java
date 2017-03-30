@@ -1,5 +1,6 @@
 package com.braintreepayments.api.internal;
 
+import android.net.Uri;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.braintreepayments.api.BuildConfig;
@@ -358,5 +359,40 @@ public class BraintreeHttpClientTest {
         });
 
         countDownLatch.await();
+    }
+
+    @Test(timeout = 30000)
+    public void testBraintreeHttpClientResponseWithClientToken() {
+        System.out.println("#debug test start");
+        final String clientToken = "sandbox_client_token_from_your_server";
+        //final String clientToken = "sandbox_6tm8pwnq_bf863wvzhwzc5stm";
+        try {
+            System.out.println("#debug token used " + clientToken);
+            Authorization auth = Authorization.fromString(clientToken);
+            System.out.println("#debug auth with " + auth.getClass().getSimpleName());
+            BraintreeHttpClient httpClient = new BraintreeHttpClient(auth);
+            Uri configUri = Uri.parse(auth.getConfigUrl())
+                    .buildUpon()
+                    .appendQueryParameter("configVersion", "3")
+                    .build();
+            final String configUrl = configUri.toString();
+            //System.out.println("#debug configUrl " + configUrl);
+            httpClient.get(configUrl, new HttpResponseCallback() {
+                @Override
+                public void success(String responseBody) {
+                    System.out.println("#debug success response " + responseBody);
+                    assertFalse(responseBody.isEmpty());
+                }
+
+                @Override
+                public void failure(Exception exception) {
+                    System.out.println("#debug failure response " + exception.getMessage());
+                    fail();
+                }
+            });
+        } catch (InvalidArgumentException e) {
+            fail(e.getMessage());
+        }
+        System.out.println("#debug test finish");
     }
 }
