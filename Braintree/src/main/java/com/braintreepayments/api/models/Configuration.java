@@ -31,6 +31,7 @@ public class Configuration {
     private static final String UNIONPAY_KEY = "unionPay";
     private static final String CARD_KEY = "creditCards";
     private static final String VISA_CHECKOUT_KEY = "visaCheckout";
+    public static final String DEFAULT_VERSION = "3";
 
     private String mConfigurationString;
     private String mClientApiUrl;

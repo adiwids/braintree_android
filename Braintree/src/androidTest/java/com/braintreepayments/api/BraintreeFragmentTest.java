@@ -4,12 +4,17 @@ import android.app.Activity;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
+import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
+import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
+import com.braintreepayments.api.models.CardBuilder;
 import com.braintreepayments.api.models.Configuration;
+import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.test.BraintreeActivityTestRule;
 import com.braintreepayments.api.test.TestActivity;
 import com.braintreepayments.api.test.TestClientTokenBuilder;
+import com.braintreepayments.testutils.TestClientTokenKey;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.junit.Before;
@@ -39,7 +44,7 @@ public class BraintreeFragmentTest {
     @Before
     public void setUp() {
         mActivity = mActivityTestRule.getActivity();
-        mClientToken = new TestClientTokenBuilder().build();
+        mClientToken = ""; //new TestClientTokenBuilder().build();
         mCountDownLatch = new CountDownLatch(1);
     }
 
@@ -102,6 +107,21 @@ public class BraintreeFragmentTest {
             @Override
             public void onResponse(GoogleApiClient googleApiClient) {
                 assertNotNull(googleApiClient);
+                mCountDownLatch.countDown();
+            }
+        });
+
+        mCountDownLatch.await();
+    }
+
+    @Test(timeout = 5000)
+    public void fetchConfiguration_worksWithVersionFromClientToken() throws InterruptedException {
+        mClientToken = TestClientTokenKey.CLIENT_TOKEN_WITH_VERSIONED_CONFIG;
+        final BraintreeFragment fragment = getFragmentWithAuthorization(mActivity, mClientToken);
+        fragment.waitForConfiguration(new ConfigurationListener() {
+            @Override
+            public void onConfigurationFetched(Configuration configuration) {
+                assertNotNull(configuration);
                 mCountDownLatch.countDown();
             }
         });

@@ -12,6 +12,7 @@ import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.HttpResponseCallback;
 import com.braintreepayments.api.internal.BraintreeSharedPreferences;
+import com.braintreepayments.api.models.Authorization;
 import com.braintreepayments.api.models.ClientToken;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.TokenizationKey;
@@ -46,9 +47,10 @@ class ConfigurationManager {
             authorization = "";
         }
 
+        final String configVersion = fragment.getAuthorization().getConfigVersion();
         final String configUrl = Uri.parse(fragment.getAuthorization().getConfigUrl())
                 .buildUpon()
-                .appendQueryParameter("configVersion", "3")
+                .appendQueryParameter("configVersion", configVersion)
                 .build()
                 .toString();
 

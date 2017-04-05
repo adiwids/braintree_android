@@ -94,4 +94,9 @@ public class TokenizationKey extends Authorization implements Parcelable {
             return new TokenizationKey[size];
         }
     };
+
+    @Override
+    public String getConfigVersion() {
+        return Configuration.DEFAULT_VERSION;
+    }
 }

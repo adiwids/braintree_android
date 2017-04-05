@@ -11,7 +11,6 @@ import com.braintreepayments.api.exceptions.InvalidArgumentException;
  * Generic base class for Braintree authorization
  */
 public abstract class Authorization implements Parcelable {
-
     private final String mRawValue;
 
     public Authorization(String rawValue) {
@@ -63,4 +62,6 @@ public abstract class Authorization implements Parcelable {
     public Authorization(Parcel in) {
         mRawValue = in.readString();
     }
+
+    public abstract String getConfigVersion();
 }

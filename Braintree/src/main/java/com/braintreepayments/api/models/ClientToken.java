@@ -1,9 +1,11 @@
 package com.braintreepayments.api.models;
 
 import android.os.Parcel;
+import android.text.TextUtils;
 import android.util.Base64;
 
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
+import com.paypal.android.sdk.onetouch.core.config.ConfigManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,9 +19,11 @@ public class ClientToken extends Authorization {
             "([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)";
     private static final String CONFIG_URL_KEY = "configUrl";
     private static final String AUTHORIZATION_FINGERPRINT_KEY = "authorizationFingerprint";
+    private static final String CONFIG_VERSION = "version";
 
     private String mConfigUrl;
     private String mAuthorizationFingerprint;
+    private String mConfigVersion;
 
     /**
      * Create a new {@link ClientToken} instance from a client token
@@ -37,6 +41,7 @@ public class ClientToken extends Authorization {
             JSONObject jsonObject = new JSONObject(clientTokenString);
             mConfigUrl = jsonObject.getString(CONFIG_URL_KEY);
             mAuthorizationFingerprint = jsonObject.getString(AUTHORIZATION_FINGERPRINT_KEY);
+            mConfigVersion = jsonObject.getString(CONFIG_VERSION);
         } catch (NullPointerException | JSONException e) {
             throw new InvalidArgumentException("Client token was invalid");
         }
@@ -81,4 +86,9 @@ public class ClientToken extends Authorization {
             return new ClientToken[size];
         }
     };
+
+    @Override
+    public String getConfigVersion() {
+        return !TextUtils.isEmpty(mConfigVersion) ? mConfigVersion : Configuration.DEFAULT_VERSION;
+    }
 }
