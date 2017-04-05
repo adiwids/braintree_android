@@ -127,7 +127,7 @@ nexusStaging {
 }
 
 group = 'com.braintreepayments.api'
-uploadArchives {
+/*uploadArchives {
     repositories {
         mavenDeployer {
             pom.setArtifactId 'braintree'
@@ -162,4 +162,4 @@ uploadArchives {
             }
         }
     }
-}
+}*/

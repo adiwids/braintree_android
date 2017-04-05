@@ -75,7 +75,7 @@ nexusStaging {
 }
 
 group = 'com.paypal.android.sdk'
-uploadArchives {
+/*uploadArchives {
     repositories {
         mavenDeployer {
             pom.setArtifactId 'data-collector'
@@ -97,4 +97,4 @@ uploadArchives {
             }
         }
     }
-}
+}*/
